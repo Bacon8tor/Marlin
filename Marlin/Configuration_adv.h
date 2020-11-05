@@ -50,6 +50,12 @@
  */
 #define THERMOCOUPLE_MAX_ERRORS 15
 
+// LASER SETTINGS 
+// AMRI Laser cutter
+#define DEFAULT_STEPPER_DEACTIVE_TIME 30
+
+// LMN Laser cutter
+//#define DEFAULT_STEPPER_DEACTIVE_TIME 30
 //
 // Custom Thermistor 1000 parameters
 //
