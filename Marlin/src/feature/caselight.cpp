@@ -22,7 +22,7 @@
 
 #include "../inc/MarlinConfig.h"
 
-#if HAS_CASE_LIGHT
+
 
 uint8_t case_light_brightness = CASE_LIGHT_DEFAULT_BRIGHTNESS;
 bool case_light_on = CASE_LIGHT_DEFAULT_ON;
@@ -80,4 +80,4 @@ void update_case_light() {
   #endif // !CASE_LIGHT_USE_NEOPIXEL
 }
 
-#endif // HAS_CASE_LIGHT
+

@@ -33,7 +33,7 @@
 #include "tempstat.h"
 #include "../../module/temperature.h"
 #include "leds.h"
-    #if DISABLED(SPINDLE_LASER_ENABLE)
+   // #if DISABLED(SPINDLE_LASER_ENABLE)
     
     void handle_status_leds(void) {
       static uint8_t red_led = LOW;
@@ -60,9 +60,9 @@
         }
       }
     }
-    #endif
+    //#endif
 
-    #if ENABLED(SPINDLE_LASER_ENABLE)
+   /* #if ENABLED(SPINDLE_LASER_ENABLE)
 
       void handle_status_leds(void) {
 
@@ -95,7 +95,7 @@
       }
     }
 
-    #endif
+    #endif*/
 
 
 #endif // TEMP_STAT_LEDS
