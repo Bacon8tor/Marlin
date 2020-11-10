@@ -12,7 +12,8 @@
  * File Description: Interface to the memory tracking sub-system.
  **************************************************************************/
 
-#pragma once
+#ifndef UNWARMBYTAB_H
+#define UNWARMBYTAB_H
 
 #include "unwarm.h"
 
@@ -29,3 +30,5 @@ typedef struct {
 } UnwTabEntry;
 
 UnwResult UnwindByTableStart(UnwindFrame* frame, const UnwindCallbacks *cb, void *data);
+
+#endif // UNWARMBYTAB_H

@@ -12,10 +12,14 @@
  * File Description: Interface to the memory tracking sub-system.
  **************************************************************************/
 
-#pragma once
+#ifndef UNWARMMEM_H
+#define UNWARMMEM_H
 
 #include "unwarm.h"
 
 bool UnwMemHashRead(MemData * const memData, uint32_t addr, uint32_t * const data, bool * const tracked);
 bool UnwMemHashWrite(MemData * const memData, uint32_t addr, uint32_t val, bool valValid);
 void UnwMemHashGC(UnwState * const state);
+
+#endif
+

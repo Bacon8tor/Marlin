@@ -1,9 +1,9 @@
 /**
  * Marlin 3D Printer Firmware
- * Copyright (c) 2020 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (C) 2016 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
  * Based on Sprinter and grbl.
- * Copyright (c) 2011 Camiel Gubbels / Erik van der Zalm
+ * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,10 +16,12 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-#pragma once
+
+#ifndef __CIRCULARQUEUE_H__
+#define __CIRCULARQUEUE_H__
 
 #include <stdint.h>
 
@@ -52,8 +54,8 @@ class CircularQueue {
      *          items that can be stored on the queue.
      */
     CircularQueue<T, N>() {
-      buffer.size = N;
-      buffer.count = buffer.head = buffer.tail = 0;
+      this->buffer.size = N;
+      this->buffer.count = this->buffer.head = this->buffer.tail = 0;
     }
 
     /**
@@ -63,15 +65,15 @@ class CircularQueue {
      * @return  type T item
      */
     T dequeue() {
-      if (isEmpty()) return T();
+      if (this->isEmpty()) return T();
 
-      uint8_t index = buffer.head;
+      uint8_t index = this->buffer.head;
 
-      --buffer.count;
-      if (++buffer.head == buffer.size)
-        buffer.head = 0;
+      --this->buffer.count;
+      if (++this->buffer.head == this->buffer.size)
+        this->buffer.head = 0;
 
-      return buffer.queue[index];
+      return this->buffer.queue[index];
     }
 
     /**
@@ -82,13 +84,13 @@ class CircularQueue {
      * @return  true if the operation was successful
      */
     bool enqueue(T const &item) {
-      if (isFull()) return false;
+      if (this->isFull()) return false;
 
-      buffer.queue[buffer.tail] = item;
+      this->buffer.queue[this->buffer.tail] = item;
 
-      ++buffer.count;
-      if (++buffer.tail == buffer.size)
-        buffer.tail = 0;
+      ++this->buffer.count;
+      if (++this->buffer.tail == this->buffer.size)
+        this->buffer.tail = 0;
 
       return true;
     }
@@ -98,21 +100,27 @@ class CircularQueue {
      * @details Returns true if there are no items on the queue, false otherwise.
      * @return  true if queue is empty
      */
-    bool isEmpty() { return buffer.count == 0; }
+    bool isEmpty() {
+      return this->buffer.count == 0;
+    }
 
     /**
      * @brief   Checks if the queue is full
      * @details Returns true if the queue is full, false otherwise.
      * @return  true if queue is full
      */
-    bool isFull() { return buffer.count == buffer.size; }
+    bool isFull() {
+      return this->buffer.count == this->buffer.size;
+    }
 
     /**
      * @brief   Gets the queue size
      * @details Returns the maximum number of items a queue can have.
      * @return  the queue size
      */
-    uint8_t size() { return buffer.size; }
+    uint8_t size() {
+      return this->buffer.size;
+    }
 
     /**
      * @brief   Gets the next item from the queue without removing it
@@ -120,12 +128,18 @@ class CircularQueue {
      *          or updating the pointers.
      * @return  first item in the queue
      */
-    T peek() { return buffer.queue[buffer.head]; }
+    T peek() {
+      return this->buffer.queue[this->buffer.head];
+    }
 
     /**
      * @brief Gets the number of items on the queue
      * @details Returns the current number of items stored on the queue.
      * @return number of items in the queue
      */
-    uint8_t count() { return buffer.count; }
+    uint8_t count() {
+      return this->buffer.count;
+    }
 };
+
+#endif

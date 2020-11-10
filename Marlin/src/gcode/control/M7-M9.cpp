@@ -16,7 +16,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -33,7 +33,7 @@
    */
   void GcodeSuite::M7() {
     planner.synchronize();                            // Wait for move to arrive
-    WRITE(COOLANT_MIST_PIN, !(COOLANT_MIST_INVERT));  // Turn on Mist coolant
+    analogWrite(COOLANT_MIST_PIN, 255);  // Turn on Mist coolant
   }
 #endif
 
@@ -43,7 +43,7 @@
    */
   void GcodeSuite::M8() {
     planner.synchronize();                              // Wait for move to arrive
-    WRITE(COOLANT_FLOOD_PIN, !(COOLANT_FLOOD_INVERT));  // Turn on Flood coolant
+    digitalWrite(COOLANT_FLOOD_PIN, 255);  // Turn on Flood coolant
   }
 #endif
 
@@ -53,10 +53,10 @@
 void GcodeSuite::M9() {
   planner.synchronize();                            // Wait for move to arrive
   #if ENABLED(COOLANT_MIST)
-    WRITE(COOLANT_MIST_PIN, COOLANT_MIST_INVERT);   // Turn off Mist coolant
+    analogWrite(COOLANT_MIST_PIN, 0);   // Turn off Mist coolant
   #endif
   #if ENABLED(COOLANT_FLOOD)
-    WRITE(COOLANT_FLOOD_PIN, COOLANT_FLOOD_INVERT); // Turn off Flood coolant
+    digitalWrite(COOLANT_FLOOD_PIN, 0); // Turn off Flood coolant
   #endif
 }
 

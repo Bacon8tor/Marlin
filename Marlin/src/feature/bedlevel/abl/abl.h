@@ -1,9 +1,9 @@
 /**
  * Marlin 3D Printer Firmware
- * Copyright (c) 2020 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (C) 2016, 2017 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
  * Based on Sprinter and grbl.
- * Copyright (c) 2011 Camiel Gubbels / Erik van der Zalm
+ * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,30 +16,36 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-#pragma once
 
-#include "../../../inc/MarlinConfigPre.h"
+#ifndef __ABL_H__
+#define __ABL_H__
 
-extern xy_pos_t bilinear_grid_spacing, bilinear_start;
-extern xy_float_t bilinear_grid_factor;
-extern bed_mesh_t z_values;
-float bilinear_z_offset(const xy_pos_t &raw);
+#include "../../../inc/MarlinConfig.h"
 
-void extrapolate_unprobed_bed_level();
-void print_bilinear_leveling_grid();
-void refresh_bed_level();
-#if ENABLED(ABL_BILINEAR_SUBDIVISION)
-  void print_bilinear_leveling_grid_virt();
-  void bed_level_virt_interpolate();
-#endif
+#if ENABLED(AUTO_BED_LEVELING_BILINEAR)
 
-#if IS_CARTESIAN && DISABLED(SEGMENT_LEVELED_MOVES)
-  void bilinear_line_to_destination(const feedRate_t &scaled_fr_mm_s, uint16_t x_splits=0xFFFF, uint16_t y_splits=0xFFFF);
-#endif
+  #include "../bedlevel.h"
 
-#define _GET_MESH_X(I) float(bilinear_start.x + (I) * bilinear_grid_spacing.x)
-#define _GET_MESH_Y(J) float(bilinear_start.y + (J) * bilinear_grid_spacing.y)
-#define Z_VALUES_ARR  z_values
+  extern int bilinear_grid_spacing[2], bilinear_start[2];
+  extern float bilinear_grid_factor[2],
+               z_values[GRID_MAX_POINTS_X][GRID_MAX_POINTS_Y];
+  float bilinear_z_offset(const float raw[XYZ]);
+
+  void extrapolate_unprobed_bed_level();
+  void print_bilinear_leveling_grid();
+  void refresh_bed_level();
+  #if ENABLED(ABL_BILINEAR_SUBDIVISION)
+    void print_bilinear_leveling_grid_virt();
+    void bed_level_virt_interpolate();
+  #endif
+
+  #if IS_CARTESIAN && DISABLED(SEGMENT_LEVELED_MOVES)
+    void bilinear_line_to_destination(const float fr_mm_s, uint16_t x_splits=0xFFFF, uint16_t y_splits=0xFFFF);
+  #endif
+
+#endif // AUTO_BED_LEVELING_BILINEAR
+
+#endif // __ABL_H__
