@@ -93,6 +93,10 @@ void menu_configuration();
   void menu_spindle_laser();
 #endif
 
+#if ENABLED(COOLANT_CONTROL)
+  void menu_coolant_control();
+#endif
+
 extern const char M21_STR[];
 
 void menu_main() {
@@ -133,10 +137,10 @@ void menu_main() {
       // *** IF THIS SECTION IS CHANGED, REPRODUCE BELOW ***
 
       //
-      // Autostart
+      // Run Auto Files
       //
       #if ENABLED(MENU_ADDAUTOSTART)
-        ACTION_ITEM(MSG_AUTOSTART, card.beginautostart);
+        ACTION_ITEM(MSG_RUN_AUTO_FILES, card.beginautostart);
       #endif
 
       if (card_detected) {
@@ -171,6 +175,10 @@ void menu_main() {
 
   #if HAS_CUTTER
     SUBMENU(MSG_CUTTER(MENU), menu_spindle_laser);
+  #endif
+  
+  #if ENABLED(COOLANT_CONTROL)
+    SUBMENU(MSG_COOLANT_MENU,menu_coolant_control);
   #endif
 
   #if HAS_TEMPERATURE
@@ -238,7 +246,7 @@ void menu_main() {
       // Autostart
       //
       #if ENABLED(MENU_ADDAUTOSTART)
-        ACTION_ITEM(MSG_AUTOSTART, card.beginautostart);
+        ACTION_ITEM(MSG_RUN_AUTO_FILES, card.beginautostart);
       #endif
 
       if (card_detected) {

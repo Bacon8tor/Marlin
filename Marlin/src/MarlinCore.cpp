@@ -60,7 +60,7 @@
 #include "sd/cardreader.h"
 
 #include "lcd/marlinui.h"
-#if HAS_TOUCH_XPT2046
+#if HAS_TOUCH_BUTTONS
   #include "lcd/touch/touch_buttons.h"
 #endif
 
@@ -217,6 +217,10 @@
   #include "feature/mmu2/mmu2.h"
 #endif
 
+#if ENABLED(COOLANT_CONTROL)
+  #include "feature/coolant_control.h"
+#endif
+
 #if HAS_L64XX
   #include "libs/L64XX/L64XX_Marlin.h"
 #endif
@@ -248,7 +252,7 @@ bool wait_for_heatup = true;
   bool wait_for_user; // = false;
 
   void wait_for_user_response(millis_t ms/*=0*/, const bool no_sleep/*=false*/) {
-    TERN(ADVANCED_PAUSE_FEATURE,,UNUSED(no_sleep));
+    UNUSED(no_sleep);
     KEEPALIVE_STATE(PAUSED_FOR_USER);
     wait_for_user = true;
     if (ms) ms += millis(); // expire time
@@ -509,7 +513,7 @@ inline void manage_inactivity(const bool ignore_stepper_queue=false) {
     kill();
   }
 
-  // M18 / M94 : Handle steppers inactive time timeout
+  // M18 / M84 : Handle steppers inactive time timeout
   if (gcode.stepper_inactive_time) {
 
     static bool already_shutdown_steppers; // = false
@@ -991,6 +995,14 @@ void setup() {
 
   SETUP_RUN(HAL_init());
 
+  // Init and disable SPI thermocouples
+  #if HEATER_0_USES_MAX6675
+    OUT_WRITE(MAX6675_SS_PIN, HIGH);  // Disable
+  #endif
+  #if HEATER_1_USES_MAX6675
+    OUT_WRITE(MAX6675_SS2_PIN, HIGH); // Disable
+  #endif
+
   #if HAS_L64XX
     SETUP_RUN(L64xxManager.init());  // Set up SPI, init drivers
   #endif
@@ -1101,7 +1113,7 @@ void setup() {
     SETUP_RUN(ethernet.init());
   #endif
 
-  #if HAS_TOUCH_XPT2046
+  #if HAS_TOUCH_BUTTONS
     SETUP_RUN(touch.init());
   #endif
 
@@ -1133,13 +1145,18 @@ void setup() {
     SETUP_RUN(cutter.init());
   #endif
 
+  #if ENABLED(COOLANT_CONTROL)
+      SETUP_RUN(coolant.init());
+  #endif
+  /*
+  *Removed and added to coolant_control.h
   #if ENABLED(COOLANT_MIST)
     OUT_WRITE(COOLANT_MIST_PIN, COOLANT_MIST_INVERT);   // Init Mist Coolant OFF
   #endif
   #if ENABLED(COOLANT_FLOOD)
     OUT_WRITE(COOLANT_FLOOD_PIN, COOLANT_FLOOD_INVERT); // Init Flood Coolant OFF
   #endif
-
+  */
   #if HAS_BED_PROBE
     SETUP_RUN(endstops.enable_z_probe(false));
   #endif
@@ -1297,6 +1314,10 @@ void setup() {
 
   #if ENABLED(PASSWORD_ON_STARTUP)
     SETUP_RUN(password.lock_machine());      // Will not proceed until correct password provided
+  #endif
+
+  #if BOTH(HAS_LCD_MENU, TOUCH_SCREEN_CALIBRATION) && EITHER(TFT_CLASSIC_UI, TFT_COLOR_UI)
+    ui.check_touch_calibration();
   #endif
 
   marlin_state = MF_RUNNING;

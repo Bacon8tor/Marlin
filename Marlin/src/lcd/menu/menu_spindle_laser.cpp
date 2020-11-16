@@ -31,6 +31,8 @@
   #include "menu_item.h"
 
   #include "../../feature/spindle_laser.h"
+  
+    #include "../../feature/coolant_control.h"
 
   void menu_spindle_laser() {
 
@@ -57,6 +59,29 @@
 
     #if BOTH(MARLIN_DEV_MODE, HAL_CAN_SET_PWM_FREQ) && defined(SPINDLE_LASER_FREQUENCY)
       EDIT_ITEM_FAST(CUTTER_MENU_FREQUENCY_TYPE, MSG_CUTTER_FREQUENCY, &cutter.frequency, 2000, 50000, cutter.refresh_frequency);
+    #endif
+
+    #if ENABLED(COOLANT_CONTROL)
+      #if DISABLED(LASER_FEATURE)
+        if(coolant.isMist) {
+            ACTION_ITEM(MSG_COOLANT_MIST_OFF,coolant.disableMist);
+        } else {
+            ACTION_ITEM(MSG_COOLANT_MIST_ON,coolant.enableMist);
+        }
+
+        if(coolant.isFlood){
+            ACTION_ITEM(MSG_COOLANT_FLOOD_OFF,coolant.disableFlood);
+        }else{
+            ACTION_ITEM(MSG_COOLANT_FLOOD_ON,coolant.enableFlood);
+        }
+
+      #else
+          if(coolant.isMist) {
+              ACTION_ITEM(MSG_COOLANT_AIR_OFF,coolant.disableMist);
+          } else {
+              ACTION_ITEM(MSG_COOLANT_AIR_ON,coolant.enableMist);
+          }
+      #endif
     #endif
     END_MENU();
   }
